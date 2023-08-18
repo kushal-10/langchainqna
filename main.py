@@ -1,6 +1,7 @@
 import argparse
 from lc.database import create_db
-from lc.model import load_model
+from lc.chain import wizard_chain
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -12,9 +13,9 @@ def main():
     )
 
     parser.add_argument(
-        '--model1', dest='model1',
+        '--chain', dest='chain',
         action = 'store_true',
-        help="Use this argument to load the WizardLM Model"
+        help="Use this argument to run the chain"
     )
 
     args = parser.parse_args()
@@ -22,8 +23,8 @@ def main():
     if args.data:
         create_db()
 
-    if args.model1:
-        load_model()
+    if args.chain:
+        wizard_chain()
 
 if __name__ == '__main__':
     main()
