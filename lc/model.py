@@ -4,6 +4,7 @@ import torch
 import transformers
 from langchain.llms import HuggingFacePipeline
 from transformers import LlamaTokenizer, LlamaForCausalLM, GenerationConfig, pipeline, BitsAndBytesConfig
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, AutoModelForCausalLM
 
 def load_model():
     # CUDA out of memory. Model is too big.
@@ -37,3 +38,28 @@ def build_pipeline(model, tokenizer):
     hf_pipe = HuggingFacePipeline(pipeline=pipe)
 
     return hf_pipe
+
+def load_t5_model():
+    tokenizer = AutoTokenizer.from_pretrained("lmsys/fastchat-t5-3b-v1.0")
+
+    model = AutoModelForSeq2SeqLM.from_pretrained("lmsys/fastchat-t5-3b-v1.0")
+
+    return model, tokenizer
+
+def load_incite():
+    tokenizer = AutoTokenizer.from_pretrained("togethercomputer/RedPajama-INCITE-Chat-3B-v1")
+
+    model = AutoModelForCausalLM.from_pretrained("togethercomputer/RedPajama-INCITE-Chat-3B-v1")
+
+    return model, tokenizer
+
+def build_t5(model, tokenizer):
+    pipe = pipeline(
+        "text2text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        max_length=256
+    )
+
+    t5 = HuggingFacePipeline(pipeline=pipe)
+    return t5

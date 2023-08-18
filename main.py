@@ -1,6 +1,6 @@
 import argparse
 from lc.database import create_db
-from lc.chain import wizard_chain
+from lc.chain import wizard_chain, t5_chain, incite_chain
 
 
 def main():
@@ -24,7 +24,9 @@ def main():
         create_db()
 
     if args.chain:
-        wizard_chain()
-
+        #wizard_chain()
+        #t5_chain()
+        answer = incite_chain(query = "Name five main topics discussed in the studies ")
+        
 if __name__ == '__main__':
     main()
