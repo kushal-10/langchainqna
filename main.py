@@ -25,8 +25,10 @@ def main():
 
     if args.chain:
         #wizard_chain()
-        #t5_chain()
-        answer = incite_chain(query = "Name five main topics discussed in the studies ")
-        
+        answer = t5_chain()
+        #answer = incite_chain(query = "Name five main topics discussed in the studies ")
+
+        print(answer)
+
 if __name__ == '__main__':
     main()

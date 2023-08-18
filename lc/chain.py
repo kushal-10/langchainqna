@@ -37,10 +37,11 @@ def t5_chain(query="Who are the main users (participants) in the two-sided marke
                                             retriever=rt,
                                             return_source_documents=True)
     
-    response = qna_chain(query)
-    print(process_llm_response(response))
+    output = qna_chain(query)
+    response = output["result"]
+    response = response[5:]
 
-    return None
+    return response
 
 def incite_chain(query="Who are the main users (participants) in the two-sided market?"):
     # Get the individual components
