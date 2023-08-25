@@ -5,7 +5,7 @@ import textwrap
 
 from lc.model import load_model, build_pipeline
 from lc.model import load_t5_model, build_t5, load_incite
-from lc.database import retrieve
+from lc.database import retrieve, retrieve_last_mile, retrieve_new
 
 
 def wizard_chain(query="Who are the main users (participants) in the two-sided market?"):
@@ -30,6 +30,43 @@ def t5_chain(query="Who are the main users (participants) in the two-sided marke
     model, tokenizer = load_t5_model()
     t5_pipe = build_t5(model, tokenizer)
     rt = retrieve()
+
+    # Create the chain
+    qna_chain = RetrievalQA.from_chain_type(llm=t5_pipe,
+                                            chain_type="stuff",
+                                            retriever=rt,
+                                            return_source_documents=True)
+    
+    output = qna_chain(query)
+    response = output["result"]
+    response = response[5:]
+
+    return response
+
+def t5_chain_last_mile(query="Who are the main users (participants) in the two-sided market?"):
+    # Get the individual components
+    model, tokenizer = load_t5_model()
+    t5_pipe = build_t5(model, tokenizer)
+    rt = retrieve_last_mile()
+
+    # Create the chain
+    qna_chain = RetrievalQA.from_chain_type(llm=t5_pipe,
+                                            chain_type="stuff",
+                                            retriever=rt,
+                                            return_source_documents=True)
+    
+    output = qna_chain(query)
+    response = output["result"]
+    response = response[5:]
+
+    return response
+
+
+def t5_chain_new(query="Who are the main users (participants) in the two-sided market?"):
+    # Get the individual components
+    model, tokenizer = load_t5_model()
+    t5_pipe = build_t5(model, tokenizer)
+    rt = retrieve_new()
 
     # Create the chain
     qna_chain = RetrievalQA.from_chain_type(llm=t5_pipe,
