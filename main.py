@@ -7,15 +7,15 @@ def main():
     parser = argparse.ArgumentParser()
 
     # options = 'last_mile', 'two_sided', 'new'
-    # create_db('last_mile')
+    create_db('last_mile')
 
     # answer, source = t5_chain_new(query = "what is the unique contribution of this study?")
     # answer, source = t5_chain_new(query = "what is a P2P rental platform?")
 
     # ans = t5_llm_chain(query = "what is a P2P rental platform?")
-    ans = t5_llm_chain(query = "what is the unique contribution of this study?")
-    print(ans)
-    print(len(ans))
+    # ans = t5_llm_chain(query = "what is the unique contribution of this study?")
+    # print(ans)
+    # print(len(ans))
 
 
     # parser.add_argument(

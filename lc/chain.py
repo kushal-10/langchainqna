@@ -83,7 +83,7 @@ def t5_chain_new(query="Who are the main users (participants) in the two-sided m
 
     return response, source
 
-def t5_llm_chain(query):
+def t5_llmchainnew(query):
     model, tokenizer = load_t5_model()
     t5_pipe = build_t5(model, tokenizer)
     rt = retrieve_new()
@@ -97,10 +97,17 @@ def t5_llm_chain(query):
     source = output["source_documents"]
 
     context = ""
+    sources = []
     for s in source:
         context += s.page_content
-
+        sources.append(s.metadata['source'])
+    print("###########################################################")
+    print("Question: " + str(query))
+    print("###########################################################")
     print("The answer is derived from the following Context: " + context)
+    print("###########################################################")
+    print("The answer is derived from the following Context: " + str(sources))
+    print("###########################################################")
 
     template = """Given the {context} please answer the following {query}. If you don't know the answer, just say that you don't know, don't try to make up an answer."""
     prompt = PromptTemplate(template=template, input_variables=["context", "query"])
@@ -115,6 +122,90 @@ def t5_llm_chain(query):
 
 
     return answer
+
+
+def t5_llmchainlastmile(query):
+    model, tokenizer = load_t5_model()
+    t5_pipe = build_t5(model, tokenizer)
+    rt = retrieve_last_mile()
+    # Create the chain
+    qna_chain = RetrievalQA.from_chain_type(llm=t5_pipe,
+                                            chain_type="stuff",
+                                            retriever=rt,
+                                            return_source_documents=True)
+    
+    output = qna_chain(query)
+    source = output["source_documents"]
+
+    context = ""
+    sources = []
+    for s in source:
+        context += s.page_content
+        sources.append(s.metadata['source'])
+    print("###########################################################")
+    print("Question: " + str(query))
+    print("###########################################################")
+    print("The answer is derived from the following Context: " + context)
+    print("###########################################################")
+    print("The answer is derived from the following Context: " + str(sources))
+    print("###########################################################")
+
+    template = """Given the {context} please answer the following {query}. If you don't know the answer, just say that you don't know, don't try to make up an answer."""
+    prompt = PromptTemplate(template=template, input_variables=["context", "query"])
+    llm_chain = LLMChain(prompt=prompt, llm=t5_pipe)
+
+    answer = llm_chain.predict(context=context, query=query)
+
+    if len(answer) < 10:
+        answer = "<pad> Cannot answer based on the given context" 
+    else:
+        answer = output["result"]
+
+
+    return answer
+
+
+def t5_llmchaintwosided(query):
+    model, tokenizer = load_t5_model()
+    t5_pipe = build_t5(model, tokenizer)
+    rt = retrieve()
+    # Create the chain
+    qna_chain = RetrievalQA.from_chain_type(llm=t5_pipe,
+                                            chain_type="stuff",
+                                            retriever=rt,
+                                            return_source_documents=True)
+    
+    output = qna_chain(query)
+    source = output["source_documents"]
+
+    context = ""
+    sources = []
+    for s in source:
+        context += s.page_content
+        sources.append(s.metadata['source'])
+    print("###########################################################")
+    print("Question: " + str(query))
+    print("###########################################################")
+    print("The answer is derived from the following Context: " + context)
+    print("###########################################################")
+    print("The answer is derived from the following Context: " + str(sources))
+    print("###########################################################")
+
+    template = """Given the {context} please answer the following {query}. If you don't know the answer, just say that you don't know, don't try to make up an answer."""
+    prompt = PromptTemplate(template=template, input_variables=["context", "query"])
+    llm_chain = LLMChain(prompt=prompt, llm=t5_pipe)
+
+    answer = llm_chain.predict(context=context, query=query)
+
+    if len(answer) < 10:
+        answer = "<pad> Cannot answer based on the given context" 
+    else:
+        answer = output["result"]
+
+
+    return answer
+
+
 
 
 def incite_chain(query="Who are the main users (participants) in the two-sided market?"):

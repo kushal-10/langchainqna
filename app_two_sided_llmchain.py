@@ -4,17 +4,18 @@
 
 import gradio as gr
 import time
-from lc.chain import t5_chain_last_mile
+from lc.chain import t5_llmchaintwosided
 
 title = """<h1 align="center">Chat</h1>"""
-description = """<br><br><h3 align="center">This is a literature chat model, which can currently answer questions to Last Mile topic in Supply chain mangement.</h3>"""
+description = """<br><br><h3 align="center">This is a literature chat model, which can currently answer questions to New Data provided.</h3>"""
 
 def user(user_message, history):
     return "", history + [[user_message, None]]
 
 def respond(message, chat_history):
     question = str(message)
-    answer = t5_chain_last_mile(question)
+    output = t5_llmchaintwosided(question)
+    answer = output[5:]
     bot_message = answer
     chat_history.append((message, bot_message))
     time.sleep(2)
@@ -29,8 +30,9 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="emerald", neutral_hue="slate"))
     msg.submit(respond, [msg, chatbot], [msg, chatbot])
 
     gr.Examples([
-        ["How to reduce carbon emissions?"],
-        ["What are the main problems in Last Mile supply chain?"]
+        ["Sample question 1?"],
+        ["Sample question 2?"],
+        ["Sample question 3?"]
     ], inputs=msg, label= "Click on any example to copy in the chatbox"
     )
 
