@@ -59,6 +59,7 @@ def retrieve_last_mile():
     
     vector_db = Chroma(persist_directory=persist_directory, embedding_function=embedding)
     retriever = vector_db.as_retriever(search_kwargs={"k": 3})
+    vector_db.persist()
 
     return retriever
 
