@@ -6,7 +6,10 @@ from lc.chain import wizard_chain, t5_chain, incite_chain
 def main():
     parser = argparse.ArgumentParser()
 
-    create_db()
+    # options = 'last_mile', 'two_sided', 'new'
+    create_db('new')
+
+
     # parser.add_argument(
     #     '--data', dest='data',
     #     action = 'store_true',

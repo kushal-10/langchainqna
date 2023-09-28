@@ -30,7 +30,7 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="emerald", neutral_hue="slate"))
 
     gr.Examples([
         ["How to reduce carbon emissions?"],
-        ["What are the main problems in Last Mile supplz chain?"]
+        ["What are the main problems in Last Mile supply chain?"]
     ], inputs=msg, label= "Click on any example to copy in the chatbox"
     )
 

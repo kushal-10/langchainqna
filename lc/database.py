@@ -7,7 +7,11 @@ from langchain.document_loaders import DirectoryLoader
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 
-def create_db():
+def create_db(inp):
+
+    db = 'data_' + inp
+    op = 'outputs/' + inp + '_db'
+
     '''
     Creates and saves a Chroma database for the required literature 
     '''
@@ -15,13 +19,13 @@ def create_db():
     embedding = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl",
                                                       model_kwargs={"device": "cuda"})
     
-    loader = DirectoryLoader('data_last_mile', glob="./*.pdf", loader_cls=PyPDFLoader)
+    loader = DirectoryLoader(db, glob="./*.pdf", loader_cls=PyPDFLoader)
     documents = loader.load()
     # len(documents)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     texts = text_splitter.split_documents(documents)
     
-    persist_directory = 'outputs/last_mile_db'
+    persist_directory = op
 
     vectordb = Chroma.from_documents(documents=texts,
                                     embedding=embedding,
