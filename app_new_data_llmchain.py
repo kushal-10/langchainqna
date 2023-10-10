@@ -4,7 +4,7 @@
 
 import gradio as gr
 import time
-from lc.chain import t5_llmchainnew
+from lc.chain import DefineChain
 
 title = """<h1 align="center">Chat</h1>"""
 description = """<br><br><h3 align="center">This is a literature chat model, which can currently answer questions to New Data provided.</h3>"""
@@ -14,7 +14,8 @@ def user(user_message, history):
 
 def respond(message, chat_history):
     question = str(message)
-    output = t5_llmchainnew(question)
+    t5chain = DefineChain("new")
+    output = t5chain.llm_chain(query=question, k=3)
     answer = output[5:]
     bot_message = answer
     chat_history.append((message, bot_message))
@@ -30,9 +31,7 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="emerald", neutral_hue="slate"))
     msg.submit(respond, [msg, chatbot], [msg, chatbot])
 
     gr.Examples([
-        ["Sample question 1?"],
-        ["Sample question 2?"],
-        ["Sample question 3?"]
+        ["What are the main topics of these papers?"]
     ], inputs=msg, label= "Click on any example to copy in the chatbox"
     )
 

@@ -21,7 +21,7 @@ def create_db(inp):
     
     loader = DirectoryLoader(db, glob="./*.pdf", loader_cls=PyPDFLoader)
     documents = loader.load()
-    # len(documents)
+
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     texts = text_splitter.split_documents(documents)
     
@@ -35,47 +35,19 @@ def create_db(inp):
     
     return None
 
-def retrieve():
-    '''
-    Define a retriever to fetch relevant documents from the database
-    '''
-    persist_directory = 'outputs/two_sided_db'
-    embedding = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl",
-                                                      model_kwargs={"device": "cuda"})
-    
-    vector_db = Chroma(persist_directory=persist_directory, embedding_function=embedding)
-    retriever = vector_db.as_retriever(search_kwargs={"k": 3})
+class GetRetriever():
+    def __init__(self, data='new') -> None:
+        self.data_dir = 'outputs/' + str(data) + '_db'
 
-    return retriever
+    def retrieve_data(self, k=3):
+        '''
+        Define a retriever to fetch relevant documents from the database
+        '''
+        persist_directory = self.data_dir
+        embedding = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl",
+                                                        model_kwargs={"device": "cuda"})
+        
+        vector_db = Chroma(persist_directory=persist_directory, embedding_function=embedding)
+        retriever = vector_db.as_retriever(search_kwargs={"k": k})
 
-
-def retrieve_last_mile():
-    '''
-    Define a retriever to fetch relevant documents from the database
-    '''
-    persist_directory = 'outputs/last_mile_db'
-    embedding = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl",
-                                                      model_kwargs={"device": "cuda"})
-    
-    vector_db = Chroma(persist_directory=persist_directory, embedding_function=embedding)
-    retriever = vector_db.as_retriever(search_kwargs={"k": 3})
-    vector_db.persist()
-
-    return retriever
-
-
-def retrieve_new():
-    '''
-    Define a retriever to fetch relevant documents from the database
-    '''
-    persist_directory = 'outputs/new_db'
-    embedding = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl",
-                                                      model_kwargs={"device": "cuda"})
-    
-    vector_db = Chroma(persist_directory=persist_directory, embedding_function=embedding)
-    retriever = vector_db.as_retriever(search_kwargs={"k": 3})
-
-    return retriever
-
-
-# create_db()
+        return retriever
