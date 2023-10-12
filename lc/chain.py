@@ -68,3 +68,33 @@ class DefineChain():
 
         return summarized_pdfs
 
+
+    def get_summary(self, query):
+        model, tokenizer = load_t5_model()
+        t5_pipe = build_t5(model, tokenizer)
+        summary1 = """The  articles  in  the  list  cover  various  topics  related  to  operations  research,  
+        including  the  impact  of  carbon  taxes  on  retail  location  decisions,  the  optimal  location  of  retailers  in  competitive  markets  
+        and  monopoly  markets,  the  impact  of  a  carbon  price  on  retail  location  decisions,  the  competitive  facility  location  problem,  
+        and  the  choice  of  green  technology.  The  articles  also  discuss  the  competitive  facility  location  problem  
+        with  attractiveness  adjustment  of  the  follower,  the  impact  of  environmental  regulations  on  transportation  mode  selection,  
+        and  the  impact  of  a  carbon  penalty  on  retail  location  competition.  The  articles  also  provide  a  review  of  the  literature  
+        on  competitive  facility  location  problems,  environmental  taxes,  and  the  choice  of  green  technology."""
+        paper1 = """ Dilek_etal2017.pdf """
+
+        summary2 = """ The  articles  and  papers  listed  in  the  summary  discuss  the  relationship  between  retail  store  density  
+        and  greenhouse  gas  emissions  in  a  retail  supply  chain.  They  explore  the  impact  of  small  local  shops  on  the  supply  chain  
+        and  the  cost  of  greenhouse  gas  emissions.  The  articles  and  papers  also  consider  the  cost  of  carbon  emissions  for  retailers  
+        and  consumers,  and  the  trade-off  between  store  density  and  truck  density.  They  propose  models  for  balancing  the  environmental 
+          impact  of  a  car  fleet  with  the  cost  of  operating  it,  and  evaluate  penalty  bounds  for  each  scenario.  
+          They  also  discuss  the  relationship  between  supply  chain  design  and  greenhouse  gas  emissions  and  use  a  tessellation  
+          of  right  triangles  to  evaluate  the  optimal  design.  """
+        paper2 = """ Cachon_2014.pdf """
+
+        template = """Given two papers {paper1} and {paper2}, along with their respective summaries {summary1} and {summary2} please answer the following question {query}"""
+        prompt = PromptTemplate(template=template, input_variables=["paper1", "paper2", "summary1", "summary2", "query"])
+        llm_chain = LLMChain(prompt=prompt, llm=t5_pipe)
+
+
+        answer = llm_chain.predict(paper1=paper1, paper2=paper2, summary1=summary1, summary2=summary2, query=query)
+
+        return answer
