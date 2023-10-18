@@ -33,7 +33,7 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="emerald", neutral_hue="slate"))
     msg.submit(respond, [msg, chatbot], [msg, chatbot])
 
     gr.Examples([
-        ["What are the main topics of these papers?"]
+        ["How many papers are we talking about and What are the main topics of these papers?"]
     ], inputs=msg, label= "Click on any example to copy in the chatbox"
     )
 

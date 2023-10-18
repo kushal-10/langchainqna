@@ -37,6 +37,48 @@ def create_db(inp):
     
     return None
 
+
+def create_multiple_db(inp='transportation'):
+    '''
+    Creates and saves a Chroma database for each of the required literature 
+    '''
+
+    db = 'data_' + inp
+    list_pdfs = os.listdir(db)
+
+    embedding = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl",
+                                                      model_kwargs={"device": "cuda"})
+    
+    # Make directories for each pdf separately 
+    dir_num = 0
+    for pdf in list_pdfs:
+        dir_num += 1
+        new_dir = os.path.join(db, db + '_' + str(dir_num))
+        os.mkdir(new_dir)
+        print('Creating Database for PDF ' + str(dir_num))
+
+        old_path = os.path.join(db, pdf)
+        new_path = os.path.join(new_dir, pdf)
+
+        os.rename(old_path, new_path)
+
+        loader = DirectoryLoader(new_dir, glob="./*.pdf", loader_cls=PyPDFLoader)
+        document = loader.load()
+
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        texts = text_splitter.split_documents(document)
+        
+        persist_directory = 'outputs/' + inp +  '/' + inp + '_' + str(dir_num) + '_db'
+
+        vectordb = Chroma.from_documents(documents=texts,
+                                        embedding=embedding,
+                                        persist_directory=persist_directory)
+        # persist the db to disk
+        vectordb.persist()
+    
+    return None
+
+
 class GetRetriever():
     def __init__(self, data='new') -> None:
         self.data_dir = 'outputs/' + str(data) + '_db'
@@ -84,15 +126,23 @@ def get_docs(folder):
     return pdf_dict
 
     
-# def rename_pdfs(folder):
-#     pdfs = os.listdir(folder)
+def get_individual_docs(folder):
+    pdf_dict = {}
+    
+    pdfs = os.listdir(folder)
+    for pdf in pdfs:
+        path = os.path.join(folder, pdf)
+        # Get the whole text35k tokens > 1024 tokens
+        print(path)
+        text = load_pdfs(path)
 
-#     for pdf in pdfs:
-#         chars = pdf.split()
-#         new_file = chars[0] + "_" + chars[1] + ".pdf"
-#         new_path = os.path.join(folder, new_file)
-#         old_path = os.path.join(folder, pdf)
-#         os.rename(old_path, new_path)
+        #Split into chunks
+        text_splitter = RecursiveCharacterTextSplitter(separators=["\n\n", "\n"], chunk_size=1000, chunk_overlap=200)
+        docs = text_splitter.create_documents([text])
+        pdf_dict[pdf] = docs
+    
+    return pdf_dict
+
 
         
     
