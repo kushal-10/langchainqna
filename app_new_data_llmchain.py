@@ -1,8 +1,8 @@
 # Application file for Gradio App for smaller model
 #Less than a minute for an answer
 
-# options = "new", "last_mile", "two_sided", "transportation/transportation_n" n=1..6
-dir = "transportation/transportation_6"
+# options = "new", "last_mile", "two_sided", "transportation/transportation_n" n=1..6, 'consulting/consulting_n'
+dir = "consulting/consulting_9"
 
 demo_query = "What is the motivation, the methodology and the results of this research? What are the key points of this research?"
 

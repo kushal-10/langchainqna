@@ -19,7 +19,7 @@ def build_t5(model, tokenizer):
         "text2text-generation",
         model=model,
         tokenizer=tokenizer,
-        max_length=256
+        max_length=2048
     )
 
     t5 = HuggingFacePipeline(pipeline=pipe)

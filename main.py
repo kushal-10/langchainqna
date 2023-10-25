@@ -8,9 +8,9 @@ def main():
     # create_db('new')
 
     #Create Individual Databases for each PDF in the literature
-    # options = 'transporation'
-    inp = 'transporation'
-    create_multiple_db('transportation')
+    # options = 'transporation', 'consulting'
+    inp = 'consulting'
+    create_multiple_db('consulting')
 
     # sum_chain = DefineChain('transportation')
     # summary = sum_chain.individual_chain()
